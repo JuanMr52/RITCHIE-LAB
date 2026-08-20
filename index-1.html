@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>Ritchie Lab — Simulación interactiva</title>
+<meta name="description" content="Simulación interactiva del método de Ritchie (concentración por formol-éter)" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- Barra de progreso global (oculta en landing/id/final) -->
+<header id="progressHeader" class="progress-header hidden">
+  <div class="progress-track" id="progressTrack">
+    <!-- generado por JS -->
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- ============ PANTALLA 1: LANDING ============ -->
+  <section class="screen active" id="screen-landing" data-screen="landing">
+    <div class="lab-grid-bg" aria-hidden="true"></div>
+    <div class="screen-content landing-content">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="56" height="56">
+          <path d="M24 6 L24 24 L10 52 A6 6 0 0 0 16 60 L48 60 A6 6 0 0 0 54 52 L40 24 L40 6"
+                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+          <line x1="20" y1="6" x2="44" y2="6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="17" y1="38" x2="47" y2="38" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+        </svg>
+      </div>
+      <p class="eyebrow">Tecnología Médica &middot; Parasitología</p>
+      <h1 class="landing-title">RITCHIE<span class="accent">LAB</span></h1>
+      <p class="landing-subtitle">Simulación interactiva del método de Ritchie</p>
+      <p class="landing-quote">&ldquo;Procesa una muestra fecal siguiendo correctamente el procedimiento.&rdquo;</p>
+      <button class="btn btn-primary btn-large" id="btnStartSim">Iniciar simulación</button>
+      <p class="landing-footnote">Basado exclusivamente en el procedimiento descrito en el material de estudio.</p>
+    </div>
+  </section>
+
+  <!-- ============ PANTALLA 2: IDENTIFICACIÓN ============ -->
+  <section class="screen" id="screen-id" data-screen="id">
+    <div class="screen-content id-content">
+      <p class="eyebrow">Antes de comenzar</p>
+      <h2 class="screen-title">Identifícate</h2>
+      <form id="idForm" class="id-form">
+        <label class="field-label" for="inputAlias">Ingresa tu nombre o alias</label>
+        <input class="field-input" id="inputAlias" type="text" placeholder="Ej. JP" maxlength="24" required autocomplete="off" />
+
+        <label class="field-label" for="inputTeam">Nombre del equipo <span class="optional-tag">(opcional)</span></label>
+        <input class="field-input" id="inputTeam" type="text" placeholder="Ej. Grupo 3" maxlength="24" autocomplete="off" />
+
+        <button type="submit" class="btn btn-primary btn-large">Entrar al laboratorio</button>
+      </form>
+      <p class="privacy-note">No se solicita correo, contraseña ni información personal.</p>
+    </div>
+  </section>
+
+  <!-- ============ ETAPA 01: PREPARACIÓN ============ -->
+  <section class="screen" id="screen-stage-01" data-screen="stage" data-stage="1">
+    <div class="screen-content stage-content">
+      <p class="stage-tag">FASE 01</p>
+      <h2 class="screen-title">Preparación de la muestra</h2>
+
+      <div class="lab-panel sample-panel">
+        <div class="sample-icon" aria-hidden="true">
+          <svg viewBox="0 0 40 60" width="40" height="60">
+            <path d="M10 4 L10 18 L4 48 A5 5 0 0 0 9 55 L31 55 A5 5 0 0 0 36 48 L30 18 L30 4" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M6 46 L34 46 L31 52 A3 3 0 0 1 28 55 L12 55 A3 3 0 0 1 9 52 Z" fill="currentColor" opacity="0.35"/>
+          </svg>
+        </div>
+        <p class="panel-statement">&ldquo;La materia fecal es dura.&rdquo;</p>
+      </div>
+
+      <div class="question-block" data-question="q1a">
+        <p class="question-text">¿Qué debes hacer?</p>
+        <div class="options-grid" data-correct="B">
+          <button class="option-btn" data-value="A">Agregar 3 mL de éter</button>
+          <button class="option-btn" data-value="B">Agregar solución isotónica y mezclar hasta que quede líquida</button>
+          <button class="option-btn" data-value="C">Agregar formol al 10%</button>
+          <button class="option-btn" data-value="D">Centrifugar inmediatamente</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <button class="btn btn-primary btn-continue" data-next="stage-02" hidden>Continuar</button>
+    </div>
+  </section>
+
+  <!-- ============ ETAPA 02: FILTRACIÓN ============ -->
+  <section class="screen" id="screen-stage-02" data-screen="stage" data-stage="2">
+    <div class="screen-content stage-content">
+      <p class="stage-tag">FASE 02</p>
+      <h2 class="screen-title">Filtración</h2>
+
+      <div class="lab-panel filter-panel">
+        <div class="filter-flow" aria-hidden="true">
+          <span class="flow-node">Muestra</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-node">Gasa</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-node">Tubo</span>
+        </div>
+      </div>
+
+      <div class="question-block" data-question="q2a">
+        <p class="question-text">¿Cómo se procesa la materia fecal líquida antes de colocarla en el tubo?</p>
+        <div class="options-grid" data-correct="A">
+          <button class="option-btn" data-value="A">Pasarla por una gasa doble y húmeda</button>
+          <button class="option-btn" data-value="B">Agregar 3 mL de éter</button>
+          <button class="option-btn" data-value="C">Agregar lugol</button>
+          <button class="option-btn" data-value="D">Decantarla directamente</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <div class="question-block" data-question="q2b" hidden>
+        <p class="question-text">¿En qué tubo se coloca aproximadamente 10 mL de materia fecal líquida?</p>
+        <div class="options-grid" data-correct="C">
+          <button class="option-btn" data-value="A">Tubo de 5 mL</button>
+          <button class="option-btn" data-value="B">Tubo de 10 mL</button>
+          <button class="option-btn" data-value="C">Tubo de centrifugación de 15 mL</button>
+          <button class="option-btn" data-value="D">Tubo de 50 mL</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <button class="btn btn-primary btn-continue" data-next="stage-03" hidden>Continuar</button>
+    </div>
+  </section>
+
+  <!-- ============ ETAPA 03: PRIMERA CENTRIFUGACIÓN ============ -->
+  <section class="screen" id="screen-stage-03" data-screen="stage" data-stage="3">
+    <div class="screen-content stage-content">
+      <p class="stage-tag">FASE 03</p>
+      <h2 class="screen-title">Primera centrifugación</h2>
+
+      <div class="lab-panel centrifuge-panel">
+        <div class="centrifuge-visual" id="centrifugeVisual1" aria-hidden="true">
+          <div class="centrifuge-body">
+            <div class="centrifuge-tube t1"></div>
+            <div class="centrifuge-tube t2"></div>
+            <div class="centrifuge-tube t3"></div>
+            <div class="centrifuge-tube t4"></div>
+            <div class="centrifuge-hub"></div>
+          </div>
+        </div>
+        <p class="panel-caption">Configura la centrífuga</p>
+
+        <div class="config-row">
+          <span class="config-label">RPM</span>
+          <div class="chip-group" data-config="rpm">
+            <button class="chip" data-value="1000">1000</button>
+            <button class="chip" data-value="1500">1500</button>
+            <button class="chip" data-value="1750">1750</button>
+            <button class="chip" data-value="2000">2000</button>
+            <button class="chip" data-value="2500">2500</button>
+          </div>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Tiempo</span>
+          <div class="chip-group" data-config="time">
+            <button class="chip" data-value="1">1 min</button>
+            <button class="chip" data-value="2">2 min</button>
+            <button class="chip" data-value="3">3 min</button>
+            <button class="chip" data-value="5">5 min</button>
+          </div>
+        </div>
+        <button class="btn btn-secondary" id="btnRunCentrifuge1">Configurar centrífuga</button>
+        <div class="feedback-box" id="centrifuge1Feedback" hidden></div>
+      </div>
+
+      <div class="question-block" data-question="q3b" hidden id="q3bBlock">
+        <p class="question-text">¿Qué haces después de centrifugar?</p>
+        <div class="options-grid" data-correct="B">
+          <button class="option-btn" data-value="A">Agregar inmediatamente 3 mL de éter</button>
+          <button class="option-btn" data-value="B">Decantar el sobrenadante</button>
+          <button class="option-btn" data-value="C">Agregar lugol</button>
+          <button class="option-btn" data-value="D">Preparar una muestra en fresco</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <div class="lab-panel info-panel" id="q3cInfo" hidden>
+        <p class="panel-statement">&ldquo;Se conserva el sedimento.&rdquo;</p>
+        <p class="panel-statement">&ldquo;Diluir el sedimento en solución salina, centrifugar como antes y decantar.&rdquo;</p>
+      </div>
+
+      <button class="btn btn-primary btn-continue" data-next="stage-04" hidden>Continuar</button>
+    </div>
+  </section>
+
+  <!-- ============ ETAPA 04: FORMOL ============ -->
+  <section class="screen" id="screen-stage-04" data-screen="stage" data-stage="4">
+    <div class="screen-content stage-content">
+      <p class="stage-tag">FASE 04</p>
+      <h2 class="screen-title">Tratamiento con formol</h2>
+
+      <div class="lab-panel reagent-panel">
+        <div class="reagent-visual" aria-hidden="true">
+          <div class="reagent-bottle formol-bottle"><span>10%</span></div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="reagent-tube"><div class="tube-liquid formol-liquid"></div></div>
+        </div>
+      </div>
+
+      <div class="question-block" data-question="q4a">
+        <p class="question-text">¿Cuánto formol al 10% se agrega aproximadamente al sedimento?</p>
+        <div class="options-grid" data-correct="C">
+          <button class="option-btn" data-value="A">1 mL</button>
+          <button class="option-btn" data-value="B">3 mL</button>
+          <button class="option-btn" data-value="C">10 mL</button>
+          <button class="option-btn" data-value="D">15 mL</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <div class="question-block" data-question="q4b" hidden>
+        <p class="question-text">¿Cuánto tiempo debe reposar?</p>
+        <div class="options-grid" data-correct="C">
+          <button class="option-btn" data-value="A">30 segundos</button>
+          <button class="option-btn" data-value="B">2 minutos</button>
+          <button class="option-btn" data-value="C">5 minutos</button>
+          <button class="option-btn" data-value="D">10 minutos</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <div class="process-strip" id="formolStrip" hidden aria-hidden="true">
+        <span>FORMOL</span><span class="flow-arrow">&rarr;</span><span>MEZCLAR</span><span class="flow-arrow">&rarr;</span><span>5 MINUTOS</span>
+      </div>
+
+      <button class="btn btn-primary btn-continue" data-next="stage-05" hidden>Continuar</button>
+    </div>
+  </section>
+
+  <!-- ============ ETAPA 05: ÉTER ============ -->
+  <section class="screen" id="screen-stage-05" data-screen="stage" data-stage="5">
+    <div class="screen-content stage-content">
+      <p class="stage-tag">FASE 05</p>
+      <h2 class="screen-title">Adición de éter</h2>
+
+      <div class="lab-panel reagent-panel">
+        <div class="reagent-visual" aria-hidden="true">
+          <div class="reagent-bottle eter-bottle"><span>Éter</span></div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="reagent-tube"><div class="tube-liquid eter-liquid"></div></div>
+        </div>
+      </div>
+
+      <div class="question-block" data-question="q5a">
+        <p class="question-text">¿Cuánto éter se agrega?</p>
+        <div class="options-grid" data-correct="B">
+          <button class="option-btn" data-value="A">1 mL</button>
+          <button class="option-btn" data-value="B">3 mL</button>
+          <button class="option-btn" data-value="C">5 mL</button>
+          <button class="option-btn" data-value="D">10 mL</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <div class="question-block" data-question="q5b" hidden>
+        <p class="question-text">¿Durante cuánto tiempo se mezcla fuertemente?</p>
+        <div class="options-grid" data-correct="C">
+          <button class="option-btn" data-value="A">5 segundos</button>
+          <button class="option-btn" data-value="B">10 segundos</button>
+          <button class="option-btn" data-value="C">30 segundos</button>
+          <button class="option-btn" data-value="D">2 minutos</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <div class="lab-panel info-panel" id="q5cInfo" hidden>
+        <p class="panel-statement">&ldquo;Tapar el tubo, mezclar fuertemente durante 30 segundos y destapar cuidadosamente.&rdquo;</p>
+      </div>
+
+      <div class="question-block" data-question="q5c" hidden>
+        <p class="question-text">En ausencia de éter, ¿qué indica el libro que puede utilizarse?</p>
+        <div class="options-grid" data-correct="C">
+          <button class="option-btn" data-value="A">Lugol</button>
+          <button class="option-btn" data-value="B">Solución salina</button>
+          <button class="option-btn" data-value="C">Gasolina blanca</button>
+          <button class="option-btn" data-value="D">Formol</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <button class="btn btn-primary btn-continue" data-next="stage-06" hidden>Continuar</button>
+    </div>
+  </section>
+
+  <!-- ============ ETAPA 06: CENTRIFUGACIÓN FINAL + 4 CAPAS ============ -->
+  <section class="screen" id="screen-stage-06" data-screen="stage" data-stage="6">
+    <div class="screen-content stage-content">
+      <p class="stage-tag">FASE 06</p>
+      <h2 class="screen-title">Centrifugación final y separación</h2>
+
+      <div class="lab-panel centrifuge-panel" id="centrifuge2Config">
+        <div class="centrifuge-visual" id="centrifugeVisual2" aria-hidden="true">
+          <div class="centrifuge-body">
+            <div class="centrifuge-tube t1"></div>
+            <div class="centrifuge-tube t2"></div>
+            <div class="centrifuge-tube t3"></div>
+            <div class="centrifuge-tube t4"></div>
+            <div class="centrifuge-hub"></div>
+          </div>
+        </div>
+        <p class="panel-caption">Configura la centrifugación final</p>
+
+        <div class="config-row">
+          <span class="config-label">RPM</span>
+          <div class="chip-group" data-config="rpm2">
+            <button class="chip" data-value="1000">1000</button>
+            <button class="chip" data-value="1500">1500</button>
+            <button class="chip" data-value="2000">2000</button>
+            <button class="chip" data-value="2500">2500</button>
+          </div>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Tiempo</span>
+          <div class="chip-group" data-config="time2">
+            <button class="chip" data-value="1">1 min</button>
+            <button class="chip" data-value="2">2 min</button>
+            <button class="chip" data-value="3">3 min</button>
+            <button class="chip" data-value="5">5 min</button>
+          </div>
+        </div>
+        <button class="btn btn-secondary" id="btnRunCentrifuge2">Centrifugar</button>
+        <div class="feedback-box" id="centrifuge2Feedback" hidden></div>
+      </div>
+
+      <p class="status-line" id="centrifugeDoneMsg" hidden>CENTRIFUGACIÓN COMPLETADA</p>
+
+      <!-- Tubo de 4 capas -->
+      <div class="layers-wrap" id="layersWrap" hidden>
+        <p class="question-text">¿Dónde se encuentra el sedimento que contiene los huevos, quistes, etc.?</p>
+        <div class="tube-big" id="tubeBig">
+          <button class="layer" data-layer="eter" data-value="eter">Éter o gasolina</button>
+          <button class="layer" data-layer="anillo" data-value="anillo">Anillo con restos de materias fecales</button>
+          <button class="layer" data-layer="formol" data-value="formol">Formol</button>
+          <button class="layer" data-layer="sedimento" data-value="sedimento">Sedimento</button>
+        </div>
+        <div class="feedback-box" id="layerFeedback" hidden></div>
+      </div>
+
+      <!-- Ordenar capas (actividad extra) -->
+      <div class="order-wrap" id="orderWrap" hidden>
+        <p class="question-text">Actividad extra: ordena las cuatro capas de arriba hacia abajo</p>
+        <p class="hint-text">Toca las tarjetas en el orden correcto, de arriba hacia abajo.</p>
+        <div class="order-cards" id="orderCards">
+          <button class="order-card" data-value="eter">Éter o gasolina</button>
+          <button class="order-card" data-value="anillo">Anillo con restos de materias fecales</button>
+          <button class="order-card" data-value="formol">Formol</button>
+          <button class="order-card" data-value="sedimento">Sedimento</button>
+        </div>
+        <div class="order-result" id="orderSlots"></div>
+        <div class="feedback-box" id="orderFeedback" hidden></div>
+      </div>
+
+      <button class="btn btn-primary btn-continue" data-next="stage-07" hidden>Continuar</button>
+    </div>
+  </section>
+
+  <!-- ============ ETAPA 07: RECUPERACIÓN + MICROSCOPÍA ============ -->
+  <section class="screen" id="screen-stage-07" data-screen="stage" data-stage="7">
+    <div class="screen-content stage-content">
+      <p class="stage-tag">FASE 07</p>
+      <h2 class="screen-title">Recuperación del sedimento</h2>
+
+      <div class="question-block" data-question="q7a">
+        <p class="question-text">¿Qué se hace con las tres capas superiores?</p>
+        <div class="options-grid" data-correct="B">
+          <button class="option-btn" data-value="A">Se mezclan con el sedimento</button>
+          <button class="option-btn" data-value="B">Se decantan cuidadosamente</button>
+          <button class="option-btn" data-value="C">Se observan directamente al microscopio</button>
+          <button class="option-btn" data-value="D">Se agregan otros 10 mL de formol</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <div class="lab-panel info-panel" id="q7bInfo" hidden>
+        <p class="panel-statement">&ldquo;Con un palillo se afloja de las paredes del tubo el anillo con restos de materias fecales.&rdquo;</p>
+        <p class="panel-statement">&ldquo;Se mezcla el sedimento con la pequeña cantidad de líquido que baja por las paredes del tubo.&rdquo;</p>
+      </div>
+
+      <div class="question-block" data-question="q7c" hidden>
+        <p class="question-text">¿Qué preparaciones se realizan finalmente?</p>
+        <div class="options-grid" data-correct="C">
+          <button class="option-btn" data-value="A">Solamente con lugol</button>
+          <button class="option-btn" data-value="B">Solamente en fresco</button>
+          <button class="option-btn" data-value="C">En fresco y con lugol</button>
+          <button class="option-btn" data-value="D">Solamente después de agregar éter</button>
+        </div>
+        <div class="feedback-box" hidden></div>
+      </div>
+
+      <div class="process-strip" id="microStrip" hidden aria-hidden="true">
+        <span>SEDIMENTO</span><span class="flow-arrow">&rarr;</span><span>PREPARACIÓN</span><span class="flow-arrow">&rarr;</span><span>MICROSCOPIO</span>
+      </div>
+
+      <button class="btn btn-primary btn-continue" data-next="final" hidden>Ver resultado</button>
+    </div>
+  </section>
+
+  <!-- ============ PANTALLA FINAL ============ -->
+  <section class="screen" id="screen-final" data-screen="final">
+    <div class="screen-content final-content">
+      <p class="eyebrow">Muestra lista</p>
+      <h2 class="screen-title">Preparaciones en fresco y con lugol, listas para observación al microscopio.</h2>
+
+      <div class="score-panel">
+        <p class="score-label">Puntuación</p>
+        <p class="score-value"><span id="finalScore">0</span><span class="score-max">/100</span></p>
+        <p class="score-time" id="finalTime"></p>
+      </div>
+
+      <div class="mode-note" id="modeNote"></div>
+
+      <button class="btn btn-primary btn-large" id="btnSubmitScore">Guardar mi puntuación</button>
+      <button class="btn btn-secondary" id="btnViewRanking">Ver ranking</button>
+    </div>
+  </section>
+
+  <!-- ============ RANKING (participante) ============ -->
+  <section class="screen" id="screen-ranking" data-screen="ranking">
+    <div class="screen-content ranking-content">
+      <p class="eyebrow">Ritchie Lab</p>
+      <h2 class="screen-title">Top 10</h2>
+      <div class="mode-note" id="rankingModeNote"></div>
+      <ol class="ranking-list" id="rankingList"></ol>
+      <button class="btn btn-secondary" id="btnRankingBack">Volver</button>
+    </div>
+  </section>
+
+  <!-- ============ MODO PRESENTADOR ============ -->
+  <section class="screen" id="screen-presenter-gate" data-screen="presenter-gate">
+    <div class="screen-content id-content">
+      <p class="eyebrow">Acceso restringido</p>
+      <h2 class="screen-title">Modo presentador</h2>
+      <form id="presenterForm" class="id-form">
+        <label class="field-label" for="inputPresenterKey">Clave de presentador</label>
+        <input class="field-input" id="inputPresenterKey" type="password" autocomplete="off" />
+        <button type="submit" class="btn btn-primary btn-large">Entrar</button>
+        <p class="feedback-box error" id="presenterError" hidden>Clave incorrecta.</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-presenter" data-screen="presenter">
+    <div class="screen-content presenter-content">
+      <div class="presenter-header">
+        <h2 class="screen-title">RITCHIE LAB — LIVE</h2>
+        <p class="presenter-count"><span id="presenterCount">0</span> participantes registrados</p>
+      </div>
+      <div class="mode-note" id="presenterModeNote"></div>
+      <table class="presenter-table">
+        <thead>
+          <tr><th>#</th><th>Participante</th><th>Equipo</th><th>Puntos</th><th>Tiempo</th></tr>
+        </thead>
+        <tbody id="presenterTableBody"></tbody>
+      </table>
+      <button class="btn btn-secondary" id="btnPresenterRefresh">Actualizar ahora</button>
+    </div>
+  </section>
+
+</main>
+
+<a href="#" id="presenterLink" class="presenter-link">Modo presentador</a>
+
+<script src="script.js"></script>
+</body>
+</html>
